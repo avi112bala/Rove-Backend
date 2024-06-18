@@ -6,6 +6,8 @@ const User = require('./db/User');
 const UserBook=require('./db/Userbook');
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
+const Jwt =require('jsonwebtoken');
+const jwtkey = "rove-avi-arsh-secrete";
 const app=express();
 
 
@@ -106,8 +108,34 @@ app.post("/check-email", async (req, res) => {
   }
 });
 
+// Login
+app.post("/login", async (req, res) => {
+  const { email } = req.body;
 
-
+  try {
+    // Find the user with the entered email
+    const user = await User.findOne({ email });
+      console.log(jwtkey);
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email" });
+    }
+    // Successful login
+    if(user){
+       Jwt.sign({ user }, jwtkey, { expiresIn: "4h" }, (err, token) => {
+         if (err) {
+           return res.status(500).json({ message: "Internal server error" });
+         }
+         res.send({ user, token: token, Response: "1" });
+         //  res.status(200).json({ user: user, Response: "1" , token:token});
+       });
+    }
+   
+   
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 
 // Signup 
@@ -117,13 +145,26 @@ app.post("/signup", async (req, resp) => {
       let user = new User(req.body);
       let result = await user.save();
       console.log(result);
-      resp
-        .status(200)
-        .json({
+      Jwt.sign({ result }, jwtkey, { expiresIn: "4h" }, (err, token) => {
+        if (err) {
+          return resp.status(500).json({ message: "Internal server error" });
+        }
+        resp.send({
+          data: result,
+          token: token,
+          Response: "1",
           success: true,
           message: "Sign up successfully!",
-          data: result,
         });
+        //  res.status(200).json({ user: user, Response: "1" , token:token});
+      });
+      // resp
+      //   .status(200)
+      //   .json({
+      //     success: true,
+      //     message: "Sign up successfully!",
+      //     data: result,
+      //   });
     } catch (error) {
       console.error("Error saving user:", error.message);
       resp.status(500).json({ success: false, message: "Failed to signup" });
@@ -153,24 +194,7 @@ app.post('/book',async(req,resp)=>{
    let result =await user.save();
    resp.send(result);
 })
-// Login
-app.post("/login", async (req, res) => {
-  const { email } = req.body;
 
-  try {
-    // Find the user with the entered email
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(401).json({ message: "Invalid email" });
-    }
-    // Successful login
-    res.status(200).json({user:user,Response:'1'});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 // CREATE NODEMAILER
 app.post("/send-email", async (req, res) => {
