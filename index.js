@@ -230,6 +230,6 @@ app.post("/send-email", async (req, res) => {
 
 
 
-app.listen(5000,()=>{
+app.listen(process.env.PORT || 5000,()=>{
   console.log('LIsting on port 5000')
 });
