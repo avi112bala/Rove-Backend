@@ -205,7 +205,7 @@ app.post("/send-email", async (req, res) => {
     service: "gmail",
     auth: {
       user: "roveindia1518@gmail.com",
-      pass: "noqsmlbblgwceyyg",
+      pass: "nyfi ljii fwnu bpzc",
     },
   });
 
