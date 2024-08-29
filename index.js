@@ -181,7 +181,7 @@ app.post('/book',async(req,resp)=>{
      service: "gmail",
      auth: {
        user: "roveindia1518@gmail.com",
-       pass: "hmgj wbpt hooo hshu",
+       pass: "nyfi ljii fwnu bpzc",
      },
    });
    const mailOptions={
