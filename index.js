@@ -1,7 +1,7 @@
 const express=require('express');
 const nodemailer=require('nodemailer');
 const cors=require('cors');
-require('./db/config');
+const {connectWithRetry}=require('./db/config');
 const User = require('./db/User');
 const UserBook=require('./db/Userbook');
 const bodyParser = require("body-parser");
@@ -19,6 +19,7 @@ app.use(cors({
   credentials: true, // Allow cookies and credentials
 }));
 app.use(bodyParser.json());
+connectWithRetry();
 
 //Sent Otp for email
 function generateotp(){
