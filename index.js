@@ -19,7 +19,7 @@ app.use(cors({
   credentials: true, // Allow cookies and credentials
 }));
 app.use(bodyParser.json());
-connectWithRetry();
+connectWithRetry(); 
 
 //Sent Otp for email
 function generateotp(){
