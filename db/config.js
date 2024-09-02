@@ -6,7 +6,8 @@ const connectWithRetry = () => {
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        socketTimeoutMS: 30000, // 30 seconds
+         socketTimeoutMS: 60000, // 60 seconds
+          serverSelectionTimeoutMS: 60000,
       }
     )
 
