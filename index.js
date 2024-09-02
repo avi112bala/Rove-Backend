@@ -13,7 +13,11 @@ const app=express();
 
 
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: 'https://rove-frontend-six.vercel.app', // Allow only this origin
+  methods: 'GET,POST',
+  credentials: true, // Allow cookies and credentials
+}));
 app.use(bodyParser.json());
 
 //Sent Otp for email
