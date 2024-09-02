@@ -19,4 +19,4 @@ const connectWithRetry = () => {
     });
 };
 
-connectWithRetry();
+module.exports = { connectWithRetry };
