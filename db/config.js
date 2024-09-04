@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
+const uri = process.env.MONGODB_URI;
 
 const connectWithRetry = () => {
   return mongoose.connect(
-      "mongodb+srv://avi116:Tech1216@cluster0.xsxuhan.mongodb.net/RoveIndia?retryWrites=true&w=majority&appName=Cluster0",
-      {
+    uri,
+     {
         useNewUrlParser: true,
         useUnifiedTopology: true,
          socketTimeoutMS: 60000, // 60 seconds
