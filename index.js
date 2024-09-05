@@ -1,14 +1,19 @@
 const express=require('express');
 const nodemailer=require('nodemailer');
 const cors=require('cors');
-const {connectWithRetry}=require('./db/config');
+// const {connectWithRetry}=require('./db/config');
 const User = require('./db/User');
 const UserBook=require('./db/Userbook');
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const Jwt =require('jsonwebtoken');
 const jwtkey = "rove-avi-arsh-secrete";
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
 const app=express();
+const PORT = process.env.PORT || 5000;
 
 
 
@@ -19,7 +24,13 @@ app.use(cors({
   credentials: true, // Allow cookies and credentials
 }));
 app.use(bodyParser.json());
-connectWithRetry(); 
+// connectWithRetry(); 
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('Connected to MongoDB Atlas'))
+.catch(err => console.error('Error connecting to MongoDB:', err));
 
 //Sent Otp for email
 function generateotp(){
@@ -233,8 +244,6 @@ app.post("/send-email", async (req, res) => {
 
 
 
-
-
-app.listen(process.env.PORT || 5000,()=>{
+app.listen(PORT,()=>{
   console.log('LIsting on port 5000')
 });
