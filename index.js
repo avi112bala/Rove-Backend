@@ -25,7 +25,7 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 // connectWithRetry(); 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(mongodb+srv://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority&appName=Cluster0, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
