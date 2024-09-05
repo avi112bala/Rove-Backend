@@ -18,16 +18,15 @@ const PORT = process.env.PORT || 5000;
 
 
 app.use(express.json())
-app.use(cors({
-  origin: 'https://rove-frontend-six.vercel.app', // Allow only this origin
-  methods: 'GET,POST',
-  credentials: true, // Allow cookies and credentials
-}));
+app.use(cors());
 app.use(bodyParser.json());
 // connectWithRetry(); 
 mongoose.connect(mongodb+srv://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority&appName=Cluster0, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+  keepAlive: true,
 })
 .then(() => console.log('Connected to MongoDB Atlas'))
 .catch(err => console.error('Error connecting to MongoDB:', err));
