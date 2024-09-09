@@ -39,6 +39,12 @@ mongoose.connect(
 .then(() => console.log('Connected to MongoDB Atlas'))
 .catch(err => console.error('Error connecting to MongoDB:', err));
 
+
+app.get('/', (req, res) => {
+  res.send('Hello from the backend!');
+});
+
+
 //Sent Otp for email
 function generateotp(){
   // return crypto.randomBytes(5).toString('base64').toUpperCase();
