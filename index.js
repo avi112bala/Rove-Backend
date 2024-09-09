@@ -18,7 +18,13 @@ const PORT = process.env.PORT || 5000;
 
 
 app.use(express.json())
-app.use(cors());
+app.use(cors({
+  origin: 'https://rove-frontend-six.vercel.app',  // Allow requests from this specific origin
+  methods: 'GET,POST',  // Allowed methods
+  credentials: true     // If you are using credentials like cookies or authorization headers
+}));
+app.options('*', cors());  // Handle preflight requests for all routes
+
 app.use(bodyParser.json());
 // connectWithRetry(); 
 mongoose.connect('mongodb://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority', {
