@@ -27,7 +27,8 @@ app.options('*', cors());  // Handle preflight requests for all routes
 
 app.use(bodyParser.json());
 // connectWithRetry(); 
-mongoose.connect('mongodb://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority', {
+mongoose.connect(
+  "mongodb+srv://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
