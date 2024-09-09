@@ -1,20 +1,121 @@
 const express=require('express');
 const nodemailer=require('nodemailer');
 const cors=require('cors');
-require('./db/config');
+const multer = require("multer");
+// const {connectWithRetry}=require('./db/config');
 const User = require('./db/User');
 const UserBook=require('./db/Userbook');
 const bodyParser = require("body-parser");
+const State = require("./db/State");
+const path = require("path");
 const crypto = require("crypto");
 const Jwt =require('jsonwebtoken');
 const jwtkey = "rove-avi-arsh-secrete";
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const fs = require("fs");
+dotenv.config();
 const app=express();
+const PORT = process.env.PORT || 5000;
 
 
 
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: 'https://rove-frontend-six.vercel.app',  
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  credentials: true     
+}));
+
+// app.use(
+//   cors({
+//     origin: "http://localhost:3000",
+//     methods: "GET,POST,PUT,DELETE,OPTIONS",
+//     credentials: true,
+//   })
+// );
+
+app.options('*', cors());  // Handle preflight requests for all routes
+
 app.use(bodyParser.json());
+// connectWithRetry(); 
+mongoose.connect(
+    "mongodb+srv://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      keepAlive: true,
+    }
+  )
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((err) => console.error("Error connecting to MongoDB:", err));
+
+//upload image
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Save files with unique names
+  },
+});
+const upload = multer({ storage });
+
+
+// POST route to handle form submissions
+
+app.post("/api/states", upload.single("stateimage"), async (req, res) => {
+    try {
+        const { statename, statedesp, staterate } = req.body;
+
+        const newState = new State({
+            statename,
+            statedesp,
+            staterate,
+            stateimage: req.file.path, // Save the image file path
+        });
+
+        await newState.save();
+
+        res.status(201).json({ message: "State data submitted successfully!" });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to submit state data", error });
+    }
+});
+app.get("/api/states", async (req, res) => {
+  try {
+    const states = await State.find();
+    res.status(200).json(states);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve states", error });
+  }
+});
+
+// DELETE route to remove a state by its ID
+app.post("/api/deletestates/:id", async (req, res) => {
+    try {
+        const stateId = req.params.id;
+        const stateToDelete = await State.findById(stateId);
+        if (!stateToDelete) {
+            return res.status(404).json({ message: "State not found" });
+        }
+        const imagePath = path.join(__dirname, stateToDelete.stateimage); 
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath); 
+        }
+        await State.findByIdAndDelete(stateId);
+        res.status(200).json({ message: "State deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to delete state", error });
+    }
+});
+
+
+
+
 
 //Sent Otp for email
 function generateotp(){
@@ -181,7 +282,7 @@ app.post('/book',async(req,resp)=>{
      service: "gmail",
      auth: {
        user: "roveindia1518@gmail.com",
-       pass: "hmgj wbpt hooo hshu",
+       pass: "nyfi ljii fwnu bpzc",
      },
    });
    const mailOptions={
@@ -205,7 +306,7 @@ app.post("/send-email", async (req, res) => {
     service: "gmail",
     auth: {
       user: "roveindia1518@gmail.com",
-      pass: "noqsmlbblgwceyyg",
+      pass: "nyfi ljii fwnu bpzc",
     },
   });
 
@@ -228,8 +329,6 @@ app.post("/send-email", async (req, res) => {
 
 
 
-
-
-app.listen(process.env.PORT || 5000,()=>{
+app.listen(PORT,()=>{
   console.log('LIsting on port 5000')
 });
