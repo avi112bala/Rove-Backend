@@ -39,16 +39,15 @@ app.options('*', cors());  // Handle preflight requests for all routes
 
 app.use(bodyParser.json());
 // connectWithRetry(); 
-mongoose.connect(
-    "mongodb+srv://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      keepAlive: true,
-    }
-  )
+const uri = process.env.MONGODB_URI;
+mongoose
+  .connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+    keepAlive: true,
+  })
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
@@ -115,6 +114,12 @@ app.post("/api/deletestates/:id", async (req, res) => {
 
 
 
+
+
+
+app.get('/', (req, res) => {
+  res.send('Hello from the backend!');
+});
 
 
 //Sent Otp for email
