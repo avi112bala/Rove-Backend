@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(cors());
 app.use(bodyParser.json());
 // connectWithRetry(); 
-mongoose.connect('mongodb://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority&appName=Cluster0', {
+mongoose.connect('mongodb://avi116:Techavi1216@cluster0.dxy3r.mongodb.net/RoveIndia?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,
